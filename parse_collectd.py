@@ -1,12 +1,33 @@
 #!/usr/bin/python3
 import logging
+import json
 import configparser as cp
 import numpy as np
-from parsers import parserload
 from os import path
+from datetime import datetime, timedelta
+from parsers import parserload, parsermemory, parsernetlink, parsercpu
 
 logging.basicConfig(format="[%(levelname)s] %(message)s", level=logging.INFO)
 CONFIG_FILE = path.join(path.dirname(path.realpath(__file__)), "default.ini")
+
+
+def save_dict(d, filename):
+    logging.info(f"Saving results into {filename}")
+    with open(filename, "w") as file:
+        json.dump(d, file, indent=4)
+
+
+def print_json(filename):
+    print(f"COLLECTD RESULTS from {filename}")
+    print("----------------------------------------\n")
+
+    with open(filename, "r") as file:
+        all_results = json.load(file)
+
+    for all_stats in all_results.values():
+        print_stats(all_stats)
+
+    print("----------------------------------------")
 
 
 def parse_cfg(cfg_path=None):
@@ -29,50 +50,98 @@ def reject_outliers(data, m=3.):
     return data[s < m]
 
 
-def get_stats(values, metric, unit=""):
-    stats = {}
-    values = np.array(values)
-    values_no_outliers = reject_outliers(values)
+def get_stats(results):
+    all_stats = {}
 
-    stats["metric"] = metric
-    stats["unit"] = unit
-    stats["samples"] = values.tolist()
-    stats["outliers"] = np.setdiff1d(values, values_no_outliers).tolist()
-    stats["min"] = float(np.amin(values))
-    stats["max"] = float(np.amax(values))
-    stats["average"] = float(np.mean(values))
-    stats["average_no_outliers"] = float(np.mean(values_no_outliers))
-    stats["std"] = float(np.std(values))
-    stats["std_no_outliers"] = float(np.std(values_no_outliers))
+    for metric, (unit, values) in results.items():
+        stats = {}
+        values = np.array(values)
+        values_no_outliers = reject_outliers(values)
 
-    return stats
+        stats["unit"] = unit
+        stats["samples"] = values.tolist()
+        stats["outliers"] = np.setdiff1d(values, values_no_outliers).tolist()
+        stats["min"] = float(np.amin(values))
+        stats["max"] = float(np.amax(values))
+        stats["average"] = float(np.mean(values))
+        stats["average_no_outliers"] = float(np.mean(values_no_outliers))
+        stats["std"] = float(np.std(values))
+        stats["std_no_outliers"] = float(np.std(values_no_outliers))
 
+        all_stats[metric] = stats
 
-def print_stats(stats):
-    metric = stats["metric"]
-    unit = stats["unit"]
-    nb_samples = len(stats["samples"])
-    nb_outliers = len(stats["outliers"])
-    ignored = ["metric", "unit", "samples", "outliers"]
-    max_key_length = max(len(k) for k in stats if k not in ignored)
-
-    print(f"{metric.upper()} ({nb_samples} elements, {nb_outliers} outliers)")
-    for k, v in stats.items():
-        if k not in ignored:
-            nb_points = max_key_length + 2 - len(k)
-            print(f"{k}{'.' * nb_points}{v:.2f} {unit}")
+    return all_stats
 
 
-def init(cfg_path=None, output=None, loglevel=logging.INFO):
+def print_stats(all_stats, end="\n"):
+    for metric, stats in all_stats.items():
+        unit = stats["unit"]
+        nb_samples = len(stats["samples"])
+        nb_outliers = len(stats["outliers"])
+        ignored = ["unit", "samples", "outliers"]
+        max_key_length = max(len(k) for k in stats if k not in ignored)
+
+        print(
+            f"{metric.upper()} ({nb_samples} elements, {nb_outliers} outliers)"
+        )
+        for k, v in stats.items():
+            if k not in ignored:
+                nb_points = max_key_length + 2 - len(k)
+                print(f"{k}{'.' * nb_points}{v:.2f} {unit}")
+
+        print(end, end='')
+
+
+def init(cfg_path=None, results=None, output=None, loglevel=logging.INFO):
     logging.getLogger().setLevel(loglevel)
 
-    print(f"COLLECTD RESULTS")
+    if results:
+        print_json(results)
+        return
+
     cfg = parse_cfg(cfg_path)
+    all_results = {}
+    now = datetime.now()
+    period = cfg.getint("GENERAL", "period")
+
+    if period > 0:
+        start_time = datetime.now() - timedelta(seconds=period)
+    else:
+        start_time = datetime.min
+
+    print(
+        f"COLLECTD RESULTS after {start_time.strftime('%Y-%m-%d %H:%M:%S %Z')}"
+    )
+    print("----------------------------------------\n")
 
     parser_load = parserload.ParserLoad(cfg)
     loads = parser_load.parse()
-    loads_stats = get_stats(loads, parser_load.metric, parser_load.unit)
+    loads_stats = get_stats(loads)
     print_stats(loads_stats)
+    all_results["cpu load"] = loads_stats
+
+    parser_cpu = parsercpu.ParserCPU(cfg)
+    cpus = parser_cpu.parse()
+    cpus_stats = get_stats(cpus)
+    print_stats(cpus_stats)
+    all_results["cpu"] = cpus_stats
+
+    parser_memory = parsermemory.ParserMemory(cfg)
+    memorys = parser_memory.parse()
+    memorys_stats = get_stats(memorys)
+    print_stats(memorys_stats)
+    all_results["memory"] = memorys_stats
+
+    parser_netlink = parsernetlink.ParserNetlink(cfg)
+    netlinks = parser_netlink.parse()
+    netlinks_stats = get_stats(netlinks)
+    print_stats(netlinks_stats)
+    all_results["netlink"] = netlinks_stats
+
+    print("----------------------------------------")
+
+    if output:
+        save_dict(all_results, output)
 
 
 if __name__ == "__main__":
@@ -87,8 +156,12 @@ if __name__ == "__main__":
                             help="the path of the config file")
         parser.add_argument("-o",
                             "--output",
-                            metavar="filename",
-                            help="save raw hiperf output to file")
+                            metavar="results.json",
+                            help="save collectd results into a JSON file")
+        parser.add_argument("-i",
+                            "--input",
+                            metavar="results.json",
+                            help="print collectd results from a JSON file")
         parser.add_argument(
             "-l",
             "--loglevel",
@@ -106,6 +179,7 @@ if __name__ == "__main__":
 
         cfg_path = parser.parse_args().config
         output = parser.parse_args().output
+        results = parser.parse_args().input
         loglevel = parser.parse_args().loglevel or "info"
 
         try:
@@ -114,6 +188,6 @@ if __name__ == "__main__":
             logging.error(f"log level invalid value '{loglevel}'")
             return
 
-        init(cfg_path, output, loglevel)
+        init(cfg_path, results, output, loglevel)
 
     main()
