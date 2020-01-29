@@ -117,9 +117,9 @@ def init(cfg_path=None, results=None, output=None, loglevel=logging.INFO):
     all_results["start_timestamp"] = start_time.timestamp()
     all_results["end_timestamp"] = end_time.timestamp()
 
-    print(
-        f"COLLECTD RESULTS after {start_time.strftime('%Y-%m-%d %H:%M:%S %Z')}"
-    )
+    print(f"COLLECTD RESULTS")
+    print(f"Start: {start_time.strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"End: {end_time.strftime('%Y-%m-%d %H:%M:%S')}")
     print("----------------------------------------\n")
 
     # CPU LOAD
