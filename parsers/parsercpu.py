@@ -50,8 +50,7 @@ class ParserCPU(parserbase.ParserBase):
                     csv_reader = csv.DictReader(file, delimiter=',')
 
                     for row in csv_reader:
-                        raw_timestamp = int(round(float(row["epoch"])))
-                        timestamp = datetime.fromtimestamp(raw_timestamp)
+                        timestamp = datetime.fromtimestamp(float(row["epoch"]))
 
                         if timestamp >= self.start_time:
                             cpus[metric][1].append(float(row["value"]))

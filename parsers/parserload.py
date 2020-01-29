@@ -11,7 +11,7 @@ class ParserLoad(parserbase.ParserBase):
         self.term = f"{cfg.get('LOAD', 'term')}term"
 
     def parse(self):
-        loads = {"cpu load": ("%", [])}
+        loads = {"cpu load": ("", [])}
 
         for _, filenames in self.get_filenames():
             for filename in filenames:
@@ -19,8 +19,7 @@ class ParserLoad(parserbase.ParserBase):
                     csv_reader = csv.DictReader(file, delimiter=',')
 
                     for row in csv_reader:
-                        raw_timestamp = int(round(float(row["epoch"])))
-                        timestamp = datetime.fromtimestamp(raw_timestamp)
+                        timestamp = datetime.fromtimestamp(float(row["epoch"]))
 
                         if timestamp >= self.start_time:
                             value = self.convert_value(float(row[self.term]),

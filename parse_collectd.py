@@ -18,11 +18,16 @@ def save_dict(d, filename):
 
 
 def print_json(filename):
-    print(f"COLLECTD RESULTS from {filename}")
-    print("----------------------------------------\n")
-
     with open(filename, "r") as file:
         all_results = json.load(file)
+
+    start_time = datetime.fromtimestamp(all_results.pop("start_timestamp"))
+    end_time = datetime.fromtimestamp(all_results.pop("end_timestamp"))
+
+    print(f"COLLECTD RESULTS from {filename}")
+    print(f"Start: {start_time.strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"End: {end_time.strftime('%Y-%m-%d %H:%M:%S')}")
+    print("----------------------------------------\n")
 
     for all_stats in all_results.values():
         print_stats(all_stats)
@@ -101,37 +106,44 @@ def init(cfg_path=None, results=None, output=None, loglevel=logging.INFO):
 
     cfg = parse_cfg(cfg_path)
     all_results = {}
-    now = datetime.now()
+    end_time = datetime.now()
     period = cfg.getint("GENERAL", "period")
 
     if period > 0:
-        start_time = datetime.now() - timedelta(seconds=period)
+        start_time = end_time - timedelta(seconds=period)
     else:
         start_time = datetime.min
+
+    all_results["start_timestamp"] = start_time.timestamp()
+    all_results["end_timestamp"] = end_time.timestamp()
 
     print(
         f"COLLECTD RESULTS after {start_time.strftime('%Y-%m-%d %H:%M:%S %Z')}"
     )
     print("----------------------------------------\n")
 
+    # CPU LOAD
     parser_load = parserload.ParserLoad(cfg)
     loads = parser_load.parse()
     loads_stats = get_stats(loads)
     print_stats(loads_stats)
     all_results["cpu load"] = loads_stats
 
+    # CPU
     parser_cpu = parsercpu.ParserCPU(cfg)
     cpus = parser_cpu.parse()
     cpus_stats = get_stats(cpus)
     print_stats(cpus_stats)
     all_results["cpu"] = cpus_stats
 
+    # MEMORY
     parser_memory = parsermemory.ParserMemory(cfg)
     memorys = parser_memory.parse()
     memorys_stats = get_stats(memorys)
     print_stats(memorys_stats)
     all_results["memory"] = memorys_stats
 
+    # NETLINK
     parser_netlink = parsernetlink.ParserNetlink(cfg)
     netlinks = parser_netlink.parse()
     netlinks_stats = get_stats(netlinks)
