@@ -18,17 +18,17 @@ Parsers are present in [parsers](parsers). `parse_collectd.py` runs all of them,
 
 You can change settings by editing [default.ini](default.ini) or by passing a custom config file:
 ```sh
-./parse_collectd -c config.ini
+./parse_collectd.py -c config.ini
 ```
 
 It is also possible to print the results from a JSON file:
 ```sh
-./parse_collectd -i results.json
+./parse_collectd.py -i results.json
 ```
 
 To see all available options:
 ```sh
-./parse_collectd -h
+./parse_collectd.py -h
 ```
 
 ## Example
