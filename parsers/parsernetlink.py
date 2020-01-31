@@ -96,12 +96,7 @@ class ParserNetlink(parserbase.ParserBase):
             interface = path.basename(path.normpath(plugin_dir))
 
             for filename in filenames:
-                category = None
-
-                for c in self.categories:
-                    if c in filename:
-                        category = c
-                        break
+                category = self.get_category(filename, self.categories)
 
                 if not category:
                     continue

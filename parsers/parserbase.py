@@ -38,3 +38,11 @@ class ParserBase:
         if unit == "MB":
             return value / 1000000.
         return value
+
+    def get_category(self, filename, categories):
+        category = path.basename(path.normpath(filename))[:-11]
+
+        if category in categories:
+            return category
+
+        return None

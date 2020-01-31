@@ -16,14 +16,9 @@ class ParserMemory(parserbase.ParserBase):
 
         for _, filenames in self.get_filenames():
             for filename in filenames:
-                metric = None
+                category = self.get_category(filename, self.categories)
 
-                for c in self.categories:
-                    if c in filename:
-                        metric = f"memory {c}"
-                        break
-
-                if not metric:
+                if not category:
                     continue
 
                 with open(filename, "r") as file:
@@ -35,6 +30,6 @@ class ParserMemory(parserbase.ParserBase):
                         if timestamp >= self.start_time:
                             value = self.convert_value(float(row["value"]),
                                                        "MB")
-                            memorys[metric][1].append(value)
+                            memorys[f"memory {category}"][1].append(value)
 
         return memorys

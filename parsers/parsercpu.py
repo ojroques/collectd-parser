@@ -36,14 +36,9 @@ class ParserCPU(parserbase.ParserBase):
             cpu_index = path.basename(path.normpath(plugin_dir))
 
             for filename in filenames:
-                metric = None
+                category = self.get_category(filename, self.categories)
 
-                for c in self.categories:
-                    if c in filename:
-                        metric = f"{cpu_index} {c}"
-                        break
-
-                if not metric:
+                if not category:
                     continue
 
                 with open(filename, "r") as file:
@@ -53,6 +48,7 @@ class ParserCPU(parserbase.ParserBase):
                         timestamp = datetime.fromtimestamp(float(row["epoch"]))
 
                         if timestamp >= self.start_time:
-                            cpus[metric][1].append(float(row["value"]))
+                            cpus[f"{cpu_index} {category}"][1].append(
+                                float(row["value"]))
 
         return cpus
