@@ -5,7 +5,7 @@ import configparser as cp
 import numpy as np
 from os import path
 from datetime import datetime, timedelta
-from parsers import parserload, parsermemory, parsernetlink, parsercpu
+from parsers import parserload, parsermemory, parsernetlink, parsercpu, parservpp
 
 logging.basicConfig(format="[%(levelname)s] %(message)s", level=logging.INFO)
 CONFIG_FILE = path.join(path.dirname(path.realpath(__file__)), "default.ini")
@@ -108,6 +108,7 @@ def init(cfg_path=None, results=None, output=None, loglevel=logging.INFO):
     all_results = {}
     end_time = datetime.now()
     period = cfg.getint("GENERAL", "period")
+    enabled = json.loads(cfg.get("GENERAL", "enabled"))
 
     if period > 0:
         start_time = end_time - timedelta(seconds=period)
@@ -123,32 +124,44 @@ def init(cfg_path=None, results=None, output=None, loglevel=logging.INFO):
     print("----------------------------------------\n")
 
     # CPU LOAD
-    parser_load = parserload.ParserLoad(cfg)
-    loads = parser_load.parse()
-    loads_stats = get_stats(loads)
-    print_stats(loads_stats)
-    all_results["cpu load"] = loads_stats
+    if "load" in enabled:
+        parser_load = parserload.ParserLoad(cfg)
+        loads = parser_load.parse()
+        loads_stats = get_stats(loads)
+        print_stats(loads_stats)
+        all_results["cpu load"] = loads_stats
 
     # CPU
-    parser_cpu = parsercpu.ParserCPU(cfg)
-    cpus = parser_cpu.parse()
-    cpus_stats = get_stats(cpus)
-    print_stats(cpus_stats)
-    all_results["cpu"] = cpus_stats
+    if "cpu" in enabled:
+        parser_cpu = parsercpu.ParserCPU(cfg)
+        cpus = parser_cpu.parse()
+        cpus_stats = get_stats(cpus)
+        print_stats(cpus_stats)
+        all_results["cpu"] = cpus_stats
 
     # MEMORY
-    parser_memory = parsermemory.ParserMemory(cfg)
-    memorys = parser_memory.parse()
-    memorys_stats = get_stats(memorys)
-    print_stats(memorys_stats)
-    all_results["memory"] = memorys_stats
+    if "memory" in enabled:
+        parser_memory = parsermemory.ParserMemory(cfg)
+        memorys = parser_memory.parse()
+        memorys_stats = get_stats(memorys)
+        print_stats(memorys_stats)
+        all_results["memory"] = memorys_stats
 
     # NETLINK
-    parser_netlink = parsernetlink.ParserNetlink(cfg)
-    netlinks = parser_netlink.parse()
-    netlinks_stats = get_stats(netlinks)
-    print_stats(netlinks_stats)
-    all_results["netlink"] = netlinks_stats
+    if "netlink" in enabled:
+        parser_netlink = parsernetlink.ParserNetlink(cfg)
+        netlinks = parser_netlink.parse()
+        netlinks_stats = get_stats(netlinks)
+        print_stats(netlinks_stats)
+        all_results["netlink"] = netlinks_stats
+
+    # VPP
+    if "vpp" in enabled:
+        parser_vpp = parservpp.ParserVPP(cfg)
+        vpps = parser_vpp.parse()
+        vpps_stats = get_stats(vpps)
+        print_stats(vpps_stats)
+        all_results["vpp"] = vpps_stats
 
     print("----------------------------------------")
 
