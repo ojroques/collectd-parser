@@ -44,63 +44,63 @@ class ParserVPP(parserbase.ParserBase):
         }
         self.units = {
             "if_drops": {
-                "packets": "packet"
+                "packets": "packet/s"
             },
             "if_punt": {
-                "packets": "packet"
+                "packets": "packet/s"
             },
             "if_ip4": {
-                "packets": "packet"
+                "packets": "packet/s"
             },
             "if_ip6": {
-                "packets": "packet"
+                "packets": "packet/s"
             },
             "if_rx-no-buf": {
-                "packets": "packet"
+                "packets": "packet/s"
             },
             "if_rx-miss": {
-                "packets": "packet"
+                "packets": "packet/s"
             },
             "if_rx-error": {
-                "packets": "packet"
+                "packets": "packet/s"
             },
             "if_tx-error": {
-                "packets": "packet"
+                "packets": "packet/s"
             },
             "if_mpls": {
-                "packets": "packet"
+                "packets": "packet/s"
             },
             "if_rx": {
-                "packets": "packet",
-                "bytes": "MB"
+                "packets": "packet/s",
+                "bytes": "MB/s"
             },
             "if_rx_unicast": {
-                "packets": "packet",
-                "bytes": "MB"
+                "packets": "packet/s",
+                "bytes": "MB/s"
             },
             "if_rx_multicast": {
-                "packets": "packet",
-                "bytes": "MB"
+                "packets": "packet/s",
+                "bytes": "MB/s"
             },
             "if_rx_broadcast": {
-                "packets": "packet",
-                "bytes": "MB"
+                "packets": "packet/s",
+                "bytes": "MB/s"
             },
             "if_tx": {
-                "packets": "packet",
-                "bytes": "MB"
+                "packets": "packet/s",
+                "bytes": "MB/s"
             },
             "if_tx_unicast": {
-                "packets": "packet",
-                "bytes": "MB"
+                "packets": "packet/s",
+                "bytes": "MB/s"
             },
             "if_tx_multicast": {
-                "packets": "packet",
-                "bytes": "MB"
+                "packets": "packet/s",
+                "bytes": "MB/s"
             },
             "if_tx_broadcast": {
-                "packets": "packet",
-                "bytes": "MB"
+                "packets": "packet/s",
+                "bytes": "MB/s"
             },
         }
 
@@ -133,7 +133,7 @@ class ParserVPP(parserbase.ParserBase):
                             for subc in self.subcategories[category]:
                                 metric = f"{interface} {category} {subc}"
                                 value = self.convert_value(
-                                    float(row[subc]), self.units[c][subc])
+                                    float(row[subc]), self.units[category][subc])
                                 vpps[metric][1].append(value)
 
         return vpps

@@ -35,7 +35,7 @@ class ParserBase:
     def convert_value(self, value, unit):
         if unit == "%":
             return value * 100.
-        if unit == "MB":
+        if "MB" in unit:
             return value / 1000000.
         return value
 

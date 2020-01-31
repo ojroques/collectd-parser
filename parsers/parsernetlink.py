@@ -53,33 +53,33 @@ class ParserNetlink(parserbase.ParserBase):
             {f"ipt_packets-class-mq-0:{i}": ["value"]
              for i in range(1, 9)})
         self.units = {
-            "if_collisions": "packets",
-            "if_dropped": "packets",
-            "if_errors": "packets",
-            "if_multicast": "packets",
-            "if_octets": "MB",
-            "if_packets": "packets",
-            "if_rx_errors-crc": "packets",
-            "if_rx_errors-fifo": "packets",
-            "if_rx_errors-frame": "packets",
-            "if_rx_errors-length": "packets",
-            "if_rx_errors-missed": "packets",
-            "if_rx_errors-over": "packets",
-            "if_tx_errors-aborted": "packets",
-            "if_tx_errors-carrier": "packets",
-            "if_tx_errors-fifo": "packets",
-            "if_tx_errors-heartbeat": "packets",
-            "if_tx_errors-window": "packets",
-            "ipt_bytes-qdisc-fq_codel-0:0": "MB",
-            "ipt_bytes-qdisc-mq-0:0": "MB",
-            "ipt_packets-qdisc-fq_codel-0:0": "packets",
-            "ipt_packets-qdisc-mq-0:0": "packets",
+            "if_collisions": "packet/s",
+            "if_dropped": "packet/s",
+            "if_errors": "packet/s",
+            "if_multicast": "packet/s",
+            "if_octets": "MB/s",
+            "if_packets": "packet/s",
+            "if_rx_errors-crc": "packet/s",
+            "if_rx_errors-fifo": "packet/s",
+            "if_rx_errors-frame": "packet/s",
+            "if_rx_errors-length": "packet/s",
+            "if_rx_errors-missed": "packet/s",
+            "if_rx_errors-over": "packet/s",
+            "if_tx_errors-aborted": "packet/s",
+            "if_tx_errors-carrier": "packet/s",
+            "if_tx_errors-fifo": "packet/s",
+            "if_tx_errors-heartbeat": "packet/s",
+            "if_tx_errors-window": "packet/s",
+            "ipt_bytes-qdisc-fq_codel-0:0": "MB/s",
+            "ipt_bytes-qdisc-mq-0:0": "MB/s",
+            "ipt_packets-qdisc-fq_codel-0:0": "packet/s",
+            "ipt_packets-qdisc-mq-0:0": "packet/s",
         }
         self.units.update(
-            {f"ipt_bytes-class-mq-0:{i}": "MB"
+            {f"ipt_bytes-class-mq-0:{i}": "MB/s"
              for i in range(1, 9)})
         self.units.update(
-            {f"ipt_packets-class-mq-0:{i}": "packets"
+            {f"ipt_packets-class-mq-0:{i}": "packet/s"
              for i in range(1, 9)})
 
     def parse(self):
@@ -111,7 +111,7 @@ class ParserNetlink(parserbase.ParserBase):
                             for subc in self.subcategories[category]:
                                 metric = f"{interface} {category} {subc}"
                                 value = self.convert_value(
-                                    float(row[subc]), self.units[c])
+                                    float(row[subc]), self.units[category])
                                 netlinks[metric][1].append(value)
 
         return netlinks
