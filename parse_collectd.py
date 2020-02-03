@@ -21,10 +21,12 @@ def print_json(filename):
     with open(filename, "r") as file:
         all_results = json.load(file)
 
+    hostname = all_results.pop("hostname")
     start_time = datetime.fromtimestamp(all_results.pop("start_timestamp"))
     end_time = datetime.fromtimestamp(all_results.pop("end_timestamp"))
 
     print(f"COLLECTD RESULTS from {filename}")
+    print(f"Host: {hostname}")
     print(f"Start: {start_time.strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"End: {end_time.strftime('%Y-%m-%d %H:%M:%S')}")
     print("----------------------------------------\n")
@@ -115,10 +117,12 @@ def init(name, cfg_path=None, output=None, loglevel=logging.INFO):
     else:
         start_time = datetime.min
 
+    all_results["hostname"] = name
     all_results["start_timestamp"] = start_time.timestamp()
     all_results["end_timestamp"] = end_time.timestamp()
 
     print(f"COLLECTD RESULTS")
+    print(f"Host: {name}")
     print(f"Start: {start_time.strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"End: {end_time.strftime('%Y-%m-%d %H:%M:%S')}")
     print("----------------------------------------\n")
