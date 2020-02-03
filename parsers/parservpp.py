@@ -69,35 +69,35 @@ class ParserVPP(parserbase.ParserBase):
             },
             "if_rx": {
                 "packets": "packet/s",
-                "bytes": "MB/s"
+                "bytes": "Mb/s"
             },
             "if_rx_unicast": {
                 "packets": "packet/s",
-                "bytes": "MB/s"
+                "bytes": "Mb/s"
             },
             "if_rx_multicast": {
                 "packets": "packet/s",
-                "bytes": "MB/s"
+                "bytes": "Mb/s"
             },
             "if_rx_broadcast": {
                 "packets": "packet/s",
-                "bytes": "MB/s"
+                "bytes": "Mb/s"
             },
             "if_tx": {
                 "packets": "packet/s",
-                "bytes": "MB/s"
+                "bytes": "Mb/s"
             },
             "if_tx_unicast": {
                 "packets": "packet/s",
-                "bytes": "MB/s"
+                "bytes": "Mb/s"
             },
             "if_tx_multicast": {
                 "packets": "packet/s",
-                "bytes": "MB/s"
+                "bytes": "Mb/s"
             },
             "if_tx_broadcast": {
                 "packets": "packet/s",
-                "bytes": "MB/s"
+                "bytes": "Mb/s"
             },
         }
 

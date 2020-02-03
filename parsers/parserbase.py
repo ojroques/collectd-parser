@@ -47,6 +47,8 @@ class ParserBase:
             return value * 100.
         if "MB" in unit:
             return value / 1000000.
+        if "Mb" in unit:
+            return (value * 8) / 1000000.
         if "GB" in unit:
             return value / 1000000000.
         return value
