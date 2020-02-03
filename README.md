@@ -35,52 +35,53 @@ To see all available options:
 ## Example
 
 ```sh
-oroques@oroques-vm:~/Documents/collectd-setup$ ./parse_collectd.py -o results.json
-[INFO] Loaded default config: /home/oroques/Documents/collectd-setup/default.ini
+oroques@oroques-vm:~/Documents/collectd-parser$ ./parse_collectd.py oroques-vm -o results.json
+[INFO] Loaded default config: /home/oroques/Documents/collectd-parser/default.ini
 COLLECTD RESULTS
-Start: 2020-01-29 12:54:16
-End: 2020-01-29 13:54:16
+Host: oroques-vm
+Start: 2020-02-03 13:06:31
+End: 2020-02-03 14:06:31
 ----------------------------------------
 
-CPU LOAD (360 elements, 26 outliers)
-min..................0.00 
-max..................82.00 
-average..............11.38 
-average_no_outliers..7.35 
-std..................14.13 
-std_no_outliers......6.43 
+CPU LOAD (361 elements, 42 outliers)
+min..................0.01 
+max..................4.87 
+average..............2.61 
+average_no_outliers..3.69 
+std..................1.77 
+std_no_outliers......0.85 
 
-CPU-0 USER (360 elements, 50 outliers)
-min..................230348.00 jiffies
-max..................230865.00 jiffies
-average..............230495.88 jiffies
-average_no_outliers..230368.19 jiffies
-std..................181.44 jiffies
-std_no_outliers......12.04 jiffies
+CPU-0 CPU-USER (360 elements, 0 outliers)
+min..................109974.00 jiffy
+max..................159915.00 jiffy
+average..............137595.98 jiffy
+average_no_outliers..137595.98 jiffy
+std..................14709.83 jiffy
+std_no_outliers......14709.83 jiffy
 
-MEMORY USED (360 elements, 92 outliers)
-min..................6982.91 MB
-max..................7082.56 MB
-average..............7011.60 MB
-average_no_outliers..6999.00 MB
-std..................26.63 MB
-std_no_outliers......1.98 MB
+MEMORY MEMORY-USED (361 elements, 79 outliers)
+min..................6788.94 MB
+max..................7730.27 MB
+average..............7339.24 MB
+average_no_outliers..7489.20 MB
+std..................376.85 MB
+std_no_outliers......293.38 MB
 
-NETLINK-ENS160 IF_OCTETS RX (360 elements, 56 outliers)
-min..................128.10 MB
-max..................129.75 MB
-average..............128.67 MB
-average_no_outliers..128.52 MB
-std..................0.45 MB
-std_no_outliers......0.30 MB
+NETLINK-ENS160 IF_OCTETS RX (12 elements, 0 outliers)
+min..................845.38 MB/s
+max..................845.45 MB/s
+average..............845.41 MB/s
+average_no_outliers..845.41 MB/s
+std..................0.02 MB/s
+std_no_outliers......0.02 MB/s
 
-NETLINK-ENS160 IF_OCTETS TX (360 elements, 142 outliers)
-min..................108.73 MB
-max..................113.79 MB
-average..............110.00 MB
-average_no_outliers..108.94 MB
-std..................1.56 MB
-std_no_outliers......0.00 MB
+NETLINK-ENS160 IF_OCTETS TX (12 elements, 0 outliers)
+min..................70.60 MB/s
+max..................70.88 MB/s
+average..............70.75 MB/s
+average_no_outliers..70.75 MB/s
+std..................0.10 MB/s
+std_no_outliers......0.10 MB/s
 
 ----------------------------------------
 [INFO] Saving results into results.json
