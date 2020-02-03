@@ -5,9 +5,8 @@ from datetime import datetime, timedelta
 
 
 class ParserBase:
-    def __init__(self, cfg, plugin_dir):
+    def __init__(self, cfg, hostname, plugin_dir=[]):
         base_dir = path.expanduser(cfg.get("GENERAL", "datadir"))
-        hostname = cfg.get("GENERAL", "hostname")
         now = datetime.now()
         period = cfg.getint("GENERAL", "period")
 

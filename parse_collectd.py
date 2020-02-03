@@ -97,7 +97,7 @@ def print_stats(all_stats, end="\n"):
         print(end, end='')
 
 
-def init(cfg_path=None, results=None, output=None, loglevel=logging.INFO):
+def init(hostname, cfg_path=None, results=None, output=None, loglevel=logging.INFO):
     logging.getLogger().setLevel(loglevel)
 
     if results:
@@ -125,7 +125,7 @@ def init(cfg_path=None, results=None, output=None, loglevel=logging.INFO):
 
     # CPU LOAD
     if "load" in enabled:
-        parser_load = parserload.ParserLoad(cfg)
+        parser_load = parserload.ParserLoad(cfg, hostname)
         loads = parser_load.parse()
         loads_stats = get_stats(loads)
         print_stats(loads_stats)
@@ -133,7 +133,7 @@ def init(cfg_path=None, results=None, output=None, loglevel=logging.INFO):
 
     # CPU
     if "cpu" in enabled:
-        parser_cpu = parsercpu.ParserCPU(cfg)
+        parser_cpu = parsercpu.ParserCPU(cfg, hostname)
         cpus = parser_cpu.parse()
         cpus_stats = get_stats(cpus)
         print_stats(cpus_stats)
@@ -141,7 +141,7 @@ def init(cfg_path=None, results=None, output=None, loglevel=logging.INFO):
 
     # MEMORY
     if "memory" in enabled:
-        parser_memory = parsermemory.ParserMemory(cfg)
+        parser_memory = parsermemory.ParserMemory(cfg, hostname)
         memorys = parser_memory.parse()
         memorys_stats = get_stats(memorys)
         print_stats(memorys_stats)
@@ -149,7 +149,7 @@ def init(cfg_path=None, results=None, output=None, loglevel=logging.INFO):
 
     # NETLINK
     if "netlink" in enabled:
-        parser_netlink = parsernetlink.ParserNetlink(cfg)
+        parser_netlink = parsernetlink.ParserNetlink(cfg, hostname)
         netlinks = parser_netlink.parse()
         netlinks_stats = get_stats(netlinks)
         print_stats(netlinks_stats)
@@ -157,7 +157,7 @@ def init(cfg_path=None, results=None, output=None, loglevel=logging.INFO):
 
     # VPP
     if "vpp" in enabled:
-        parser_vpp = parservpp.ParserVPP(cfg)
+        parser_vpp = parservpp.ParserVPP(cfg, hostname)
         vpps = parser_vpp.parse()
         vpps_stats = get_stats(vpps)
         print_stats(vpps_stats)
@@ -175,6 +175,9 @@ if __name__ == "__main__":
     def main():
         parser = argparse.ArgumentParser(
             description="Parse CSV files produced by collectd")
+        parser.add_argument("hostname",
+                            metavar="hostname",
+                            help="host to parse")
         parser.add_argument("-c",
                             "--config",
                             metavar="config",
@@ -202,6 +205,7 @@ if __name__ == "__main__":
             "critical": logging.CRITICAL
         }
 
+        hostname = parser.parse_args().hostname
         cfg_path = parser.parse_args().config
         output = parser.parse_args().output
         results = parser.parse_args().input
@@ -213,6 +217,6 @@ if __name__ == "__main__":
             logging.error(f"log level invalid value '{loglevel}'")
             return
 
-        init(cfg_path, results, output, loglevel)
+        init(hostname, cfg_path, results, output, loglevel)
 
     main()

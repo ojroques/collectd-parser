@@ -8,8 +8,8 @@ from datetime import datetime
 
 
 class ParserVPP(parserbase.ParserBase):
-    def __init__(self, cfg):
-        parserbase.ParserBase.__init__(self, cfg, [])
+    def __init__(self, cfg, hostname):
+        parserbase.ParserBase.__init__(self, cfg, hostname)
         interfaces = json.loads(cfg.get("VPP", "interfaces"))
 
         if interfaces:

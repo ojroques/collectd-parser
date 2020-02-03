@@ -7,8 +7,8 @@ from datetime import datetime
 
 
 class ParserMemory(parserbase.ParserBase):
-    def __init__(self, cfg):
-        parserbase.ParserBase.__init__(self, cfg, ["memory"])
+    def __init__(self, cfg, hostname):
+        parserbase.ParserBase.__init__(self, cfg, hostname, ["memory"])
         self.categories = json.loads(cfg.get("MEMORY", "categories"))
 
     def parse(self):

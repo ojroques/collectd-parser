@@ -8,8 +8,8 @@ from datetime import datetime
 
 
 class ParserCPU(parserbase.ParserBase):
-    def __init__(self, cfg):
-        parserbase.ParserBase.__init__(self, cfg, [])
+    def __init__(self, cfg, hostname):
+        parserbase.ParserBase.__init__(self, cfg, hostname)
         cpus = json.loads(cfg.get("CPU", "cpus"))
 
         if cpus:

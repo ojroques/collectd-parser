@@ -8,8 +8,8 @@ from datetime import datetime
 
 
 class ParserNetlink(parserbase.ParserBase):
-    def __init__(self, cfg):
-        parserbase.ParserBase.__init__(self, cfg, [])
+    def __init__(self, cfg, hostname):
+        parserbase.ParserBase.__init__(self, cfg, hostname)
         interfaces = json.loads(cfg.get("NETLINK", "interfaces"))
 
         if interfaces:

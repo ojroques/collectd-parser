@@ -6,8 +6,8 @@ from datetime import datetime
 
 
 class ParserLoad(parserbase.ParserBase):
-    def __init__(self, cfg):
-        parserbase.ParserBase.__init__(self, cfg, ["load"])
+    def __init__(self, cfg, hostname):
+        parserbase.ParserBase.__init__(self, cfg, hostname, ["load"])
         self.term = f"{cfg.get('LOAD', 'term')}term"
 
     def parse(self):
