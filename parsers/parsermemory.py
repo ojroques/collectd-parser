@@ -14,7 +14,7 @@ class ParserMemory(parserbase.ParserBase):
     def parse(self):
         memorys = {f"memory {c}": ("MB", []) for c in self.categories}
 
-        for _, filenames in self.get_filenames():
+        for _, filenames in self.get_all_filenames():
             for filename in filenames:
                 category = self.get_category(filename, self.categories)
 

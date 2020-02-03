@@ -13,7 +13,7 @@ class ParserLoad(parserbase.ParserBase):
     def parse(self):
         loads = {"cpu load": ("", [])}
 
-        for _, filenames in self.get_filenames():
+        for _, filenames in self.get_all_filenames():
             for filename in filenames:
                 with open(filename, "r") as file:
                     csv_reader = csv.DictReader(file, delimiter=',')

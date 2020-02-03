@@ -9,17 +9,14 @@ from datetime import datetime
 
 class ParserNetlink(parserbase.ParserBase):
     def __init__(self, cfg, hostname):
-        parserbase.ParserBase.__init__(self, cfg, hostname)
         interfaces = json.loads(cfg.get("NETLINK", "interfaces"))
+        parserbase.ParserBase.__init__(self, cfg, hostname,
+                                       [f"netlink-{i}" for i in interfaces])
 
-        if interfaces:
+        if not self.plugin_dirs:
             self.plugin_dirs = [
-                path.join(self.data_dir, f"netlink-{i}") for i in interfaces
-            ]
-        else:
-            self.plugin_dirs = [
-                path.join(self.data_dir, p) for p in self.get_directories()
-                if "netlink" in p
+                p for p in self.get_all_plugin_dirs()
+                if "netlink" in path.basename(path.normpath(p))
             ]
 
         self.categories = json.loads(cfg.get("NETLINK", "categories"))
@@ -92,7 +89,7 @@ class ParserNetlink(parserbase.ParserBase):
                     for sc in scs:
                         netlinks[f"{interface} {c} {sc}"] = (self.units[c], [])
 
-        for plugin_dir, filenames in self.get_filenames():
+        for plugin_dir, filenames in self.get_all_filenames():
             interface = path.basename(path.normpath(plugin_dir))
 
             for filename in filenames:

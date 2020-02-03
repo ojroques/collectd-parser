@@ -9,17 +9,14 @@ from datetime import datetime
 
 class ParserVPP(parserbase.ParserBase):
     def __init__(self, cfg, hostname):
-        parserbase.ParserBase.__init__(self, cfg, hostname)
         interfaces = json.loads(cfg.get("VPP", "interfaces"))
+        parserbase.ParserBase.__init__(self, cfg, hostname,
+                                       [f"vpp-{i}" for i in interfaces])
 
-        if interfaces:
+        if not self.plugin_dirs:
             self.plugin_dirs = [
-                path.join(self.data_dir, f"vpp-{i}") for i in interfaces
-            ]
-        else:
-            self.plugin_dirs = [
-                path.join(self.data_dir, p) for p in self.get_directories()
-                if "vpp" in p
+                p for p in self.get_all_plugin_dirs()
+                if "vpp" in path.basename(path.normpath(p))
             ]
 
         self.categories = json.loads(cfg.get("VPP", "categories"))
@@ -114,7 +111,7 @@ class ParserVPP(parserbase.ParserBase):
                     for sc in scs:
                         vpps[f"{interface} {c} {sc}"] = (self.units[c][sc], [])
 
-        for plugin_dir, filenames in self.get_filenames():
+        for plugin_dir, filenames in self.get_all_filenames():
             interface = path.basename(path.normpath(plugin_dir))
 
             for filename in filenames:
@@ -133,7 +130,8 @@ class ParserVPP(parserbase.ParserBase):
                             for subc in self.subcategories[category]:
                                 metric = f"{interface} {category} {subc}"
                                 value = self.convert_value(
-                                    float(row[subc]), self.units[category][subc])
+                                    float(row[subc]),
+                                    self.units[category][subc])
                                 vpps[metric][1].append(value)
 
         return vpps

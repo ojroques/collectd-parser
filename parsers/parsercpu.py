@@ -9,17 +9,14 @@ from datetime import datetime
 
 class ParserCPU(parserbase.ParserBase):
     def __init__(self, cfg, hostname):
-        parserbase.ParserBase.__init__(self, cfg, hostname)
         cpus = json.loads(cfg.get("CPU", "cpus"))
+        parserbase.ParserBase.__init__(self, cfg, hostname,
+                                       [f"cpu-{i}" for i in cpus])
 
-        if cpus:
+        if not self.plugin_dirs:
             self.plugin_dirs = [
-                path.join(self.data_dir, f"cpu-{i}") for i in cpus
-            ]
-        else:
-            self.plugin_dirs = [
-                path.join(self.data_dir, p) for p in self.get_directories()
-                if "cpu" in p
+                p for p in self.get_all_plugin_dirs()
+                if "cpu" in path.basename(path.normpath(p))
             ]
 
         self.categories = json.loads(cfg.get("CPU", "categories"))
@@ -32,7 +29,7 @@ class ParserCPU(parserbase.ParserBase):
             for c in self.categories:
                 cpus[f"{cpu_index} {c}"] = ("jiffies", [])
 
-        for plugin_dir, filenames in self.get_filenames():
+        for plugin_dir, filenames in self.get_all_filenames():
             cpu_index = path.basename(path.normpath(plugin_dir))
 
             for filename in filenames:
