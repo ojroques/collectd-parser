@@ -27,7 +27,7 @@ class ParserCPU(parserbase.ParserBase):
         for p in self.plugin_dirs:
             cpu_index = path.basename(path.normpath(p))
             for c in self.categories:
-                cpus[f"{cpu_index} {c}"] = ("jiffies", [])
+                cpus[f"{cpu_index} {c}"] = ("jiffy", [])
 
         for plugin_dir, filenames in self.get_all_filenames():
             cpu_index = path.basename(path.normpath(plugin_dir))
