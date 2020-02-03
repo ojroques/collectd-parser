@@ -22,8 +22,7 @@ class ParserLoad(parserbase.ParserBase):
                         timestamp = datetime.fromtimestamp(float(row["epoch"]))
 
                         if timestamp >= self.start_time:
-                            value = self.convert_value(float(row[self.term]),
-                                                       "%")
+                            value = float(row[self.term])
                             loads["cpu load"][1].append(value)
 
         return loads
