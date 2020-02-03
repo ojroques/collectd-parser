@@ -97,11 +97,11 @@ def print_stats(all_stats, end="\n"):
         print(end, end='')
 
 
-def init(hostname, cfg_path=None, results=None, output=None, loglevel=logging.INFO):
+def init(name, cfg_path=None, output=None, loglevel=logging.INFO):
     logging.getLogger().setLevel(loglevel)
 
-    if results:
-        print_json(results)
+    if (len(name) > 5) and (name[-5:].lower() == ".json"):
+        print_json(name)
         return
 
     cfg = parse_cfg(cfg_path)
@@ -125,7 +125,7 @@ def init(hostname, cfg_path=None, results=None, output=None, loglevel=logging.IN
 
     # CPU LOAD
     if "load" in enabled:
-        parser_load = parserload.ParserLoad(cfg, hostname)
+        parser_load = parserload.ParserLoad(cfg, name)
         loads = parser_load.parse()
         loads_stats = get_stats(loads)
         print_stats(loads_stats)
@@ -133,7 +133,7 @@ def init(hostname, cfg_path=None, results=None, output=None, loglevel=logging.IN
 
     # CPU
     if "cpu" in enabled:
-        parser_cpu = parsercpu.ParserCPU(cfg, hostname)
+        parser_cpu = parsercpu.ParserCPU(cfg, name)
         cpus = parser_cpu.parse()
         cpus_stats = get_stats(cpus)
         print_stats(cpus_stats)
@@ -141,7 +141,7 @@ def init(hostname, cfg_path=None, results=None, output=None, loglevel=logging.IN
 
     # MEMORY
     if "memory" in enabled:
-        parser_memory = parsermemory.ParserMemory(cfg, hostname)
+        parser_memory = parsermemory.ParserMemory(cfg, name)
         memorys = parser_memory.parse()
         memorys_stats = get_stats(memorys)
         print_stats(memorys_stats)
@@ -149,7 +149,7 @@ def init(hostname, cfg_path=None, results=None, output=None, loglevel=logging.IN
 
     # NETLINK
     if "netlink" in enabled:
-        parser_netlink = parsernetlink.ParserNetlink(cfg, hostname)
+        parser_netlink = parsernetlink.ParserNetlink(cfg, name)
         netlinks = parser_netlink.parse()
         netlinks_stats = get_stats(netlinks)
         print_stats(netlinks_stats)
@@ -157,7 +157,7 @@ def init(hostname, cfg_path=None, results=None, output=None, loglevel=logging.IN
 
     # VPP
     if "vpp" in enabled:
-        parser_vpp = parservpp.ParserVPP(cfg, hostname)
+        parser_vpp = parservpp.ParserVPP(cfg, name)
         vpps = parser_vpp.parse()
         vpps_stats = get_stats(vpps)
         print_stats(vpps_stats)
@@ -175,9 +175,10 @@ if __name__ == "__main__":
     def main():
         parser = argparse.ArgumentParser(
             description="Parse CSV files produced by collectd")
-        parser.add_argument("hostname",
-                            metavar="hostname",
-                            help="host to parse")
+        parser.add_argument(
+            "name",
+            metavar="hostname or JSON file",
+            help="host to parse or collectd JSON results to print out")
         parser.add_argument("-c",
                             "--config",
                             metavar="config",
@@ -186,10 +187,6 @@ if __name__ == "__main__":
                             "--output",
                             metavar="results.json",
                             help="save collectd results into a JSON file")
-        parser.add_argument("-i",
-                            "--input",
-                            metavar="results.json",
-                            help="print collectd results from a JSON file")
         parser.add_argument(
             "-l",
             "--loglevel",
@@ -205,10 +202,9 @@ if __name__ == "__main__":
             "critical": logging.CRITICAL
         }
 
-        hostname = parser.parse_args().hostname
+        name = parser.parse_args().name
         cfg_path = parser.parse_args().config
         output = parser.parse_args().output
-        results = parser.parse_args().input
         loglevel = parser.parse_args().loglevel or "info"
 
         try:
@@ -217,6 +213,6 @@ if __name__ == "__main__":
             logging.error(f"log level invalid value '{loglevel}'")
             return
 
-        init(hostname, cfg_path, results, output, loglevel)
+        init(name, cfg_path, output, loglevel)
 
     main()

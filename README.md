@@ -12,19 +12,19 @@ Parsers for [collectd](https://github.com/collectd/collectd). The [CSV plugin](h
 * Numpy
 
 ## Usage
-Parsers are present in [parsers](parsers). `parse_collectd.py` runs all of them, prints the results and can save them is JSON format:
+Parsers are present in [parsers](parsers). `parse_collectd.py` runs all of them for a given host, prints the results and can save them is JSON format:
 ```sh
-./parse_collectd.py -o results.json
+./parse_collectd.py myhost -o results.json
 ```
 
 You can change settings by editing [default.ini](default.ini) or by passing a custom config file:
 ```sh
-./parse_collectd.py -c config.ini
+./parse_collectd.py myhost -c config.ini
 ```
 
 It is also possible to print the results from a JSON file:
 ```sh
-./parse_collectd.py -i results.json
+./parse_collectd.py results.json
 ```
 
 To see all available options:
