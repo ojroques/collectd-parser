@@ -130,8 +130,7 @@ class ParserVPP(parserbase.ParserBase):
                             for subc in self.subcategories[category]:
                                 metric = f"{interface} {category} {subc}"
                                 value = self.convert_value(
-                                    float(row[subc]),
-                                    self.units[category][subc])
+                                    row[subc], self.units[category][subc])
                                 vpps[metric][1].append(value)
 
         return vpps

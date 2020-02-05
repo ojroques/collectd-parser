@@ -108,7 +108,7 @@ class ParserNetlink(parserbase.ParserBase):
                             for subc in self.subcategories[category]:
                                 metric = f"{interface} {category} {subc}"
                                 value = self.convert_value(
-                                    float(row[subc]), self.units[category])
+                                    row[subc], self.units[category])
                                 netlinks[metric][1].append(value)
 
         return netlinks

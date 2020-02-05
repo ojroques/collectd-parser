@@ -42,7 +42,12 @@ class ParserBase:
 
         return None
 
-    def convert_value(self, value, unit):
+    def convert_value(self, value, unit=""):
+        if value.lower() == "nan":
+            return 0.0
+
+        value = float(value)
+
         if unit == "%":
             return value * 100.
         if "MB" in unit:
@@ -51,4 +56,5 @@ class ParserBase:
             return (value * 8) / 1000000.
         if "GB" in unit:
             return value / 1000000000.
+
         return value

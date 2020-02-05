@@ -28,8 +28,7 @@ class ParserMemory(parserbase.ParserBase):
                         timestamp = datetime.fromtimestamp(float(row["epoch"]))
 
                         if timestamp >= self.start_time:
-                            value = self.convert_value(float(row["value"]),
-                                                       "MB")
+                            value = self.convert_value(row["value"], "MB")
                             memorys[f"memory {category}"][1].append(value)
 
         return memorys

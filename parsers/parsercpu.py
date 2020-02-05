@@ -45,7 +45,7 @@ class ParserCPU(parserbase.ParserBase):
                         timestamp = datetime.fromtimestamp(float(row["epoch"]))
 
                         if timestamp >= self.start_time:
-                            cpus[f"{cpu_index} {category}"][1].append(
-                                float(row["value"]))
+                            value = self.convert_value(row["value"])
+                            cpus[f"{cpu_index} {category}"][1].append(value)
 
         return cpus
