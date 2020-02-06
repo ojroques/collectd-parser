@@ -5,7 +5,7 @@ import configparser as cp
 import numpy as np
 from os import path
 from datetime import datetime, timedelta
-from parsers import parserload, parsermemory, parsernetlink, parsercpu, parservpp
+from parsers import parserload, parsermemory, parsernetlink, parsercpu, parservpp, parservpphicn
 
 logging.basicConfig(format="[%(levelname)s] %(message)s", level=logging.INFO)
 CONFIG_FILE = path.join(path.dirname(path.realpath(__file__)), "default.ini")
@@ -166,6 +166,21 @@ def init(name, cfg_path=None, output=None, loglevel=logging.INFO):
         vpps_stats = get_stats(vpps)
         print_stats(vpps_stats)
         all_results["vpp"] = vpps_stats
+
+    # VPP_HICN
+    if "vpp_hicn" in enabled:
+        parser_vpphicn = parservpphicn.ParserVPPHICN(cfg, name)
+
+        if cfg.getboolean("VPP_HICN", "node"):
+            node_values = parser_vpphicn.parse_node()
+            node_stats = get_stats(node_values)
+            print_stats(node_stats)
+            all_results["vpp_hicn_node"] = node_stats
+
+        faces_values = parser_vpphicn.parse_faces()
+        faces_stats = get_stats(faces_values)
+        print_stats(faces_stats)
+        all_results["vpp_hicn_faces"] = faces_stats
 
     print("----------------------------------------")
 

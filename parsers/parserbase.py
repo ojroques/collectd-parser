@@ -27,8 +27,10 @@ class ParserBase:
             if path.isdir(full_plugin_dir):
                 yield full_plugin_dir
 
-    def get_all_filenames(self):
-        for plugin_dir in self.plugin_dirs:
+    def get_all_filenames(self, directories=None):
+        _directories = directories or self.plugin_dirs
+
+        for plugin_dir in _directories:
             filenames = sorted(
                 path.join(plugin_dir, f) for f in listdir(plugin_dir)
                 if path.isfile(path.join(plugin_dir, f)))
