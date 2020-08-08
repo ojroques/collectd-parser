@@ -1,5 +1,3 @@
-import logging
-import configparser as cp
 import parsers.parserbase as parserbase
 import csv
 import json

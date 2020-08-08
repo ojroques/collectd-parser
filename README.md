@@ -5,8 +5,6 @@ Parsers for [collectd](https://github.com/collectd/collectd). The [CSV plugin](h
 * [cpu load](https://collectd.org/wiki/index.php/Plugin:Load)
 * [netlink](https://collectd.org/wiki/index.php/Plugin:Netlink)
 * [memory](https://collectd.org/wiki/index.php/Plugin:Memory)
-* vpp
-* vpp_hicn
 
 ## Requirements
 * Python 3.6+

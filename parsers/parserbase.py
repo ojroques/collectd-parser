@@ -1,5 +1,3 @@
-import logging
-import configparser as cp
 from os import path, listdir
 from datetime import datetime, timedelta
 
@@ -7,7 +5,6 @@ from datetime import datetime, timedelta
 class ParserBase:
     def __init__(self, cfg, hostname, plugin_dirs=[]):
         base_dir = path.expanduser(cfg.get("GENERAL", "datadir"))
-        now = datetime.now()
         period = cfg.getint("GENERAL", "period")
 
         self.data_dir = path.join(base_dir, hostname)
